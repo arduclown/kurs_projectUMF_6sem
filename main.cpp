@@ -63,14 +63,14 @@ int maxiter = 10000;
 double e = 1e-18;
 
 //параметры для Кранка-Николсона
-double T = 1; //конечное время
-double tau = 0.1; //шаг по времени
+double T = 5; //конечное время
+double tau = 1/64.; //шаг по времени
 int nt = static_cast<int>(T / tau) + 1; //кол-во временных шагов
 double sigma = 1.0; //коэффициент sigma
 
 double Func(int num, double x, double y, double t) 
 {
-    return 3*pow(t, 2);
+    return cos(t);
 }
 
 double lambdaV (int num)
@@ -94,7 +94,7 @@ double u_Betta(int num, double x, double y, double t)
 {
     switch(num)
     {
-        case 1: return 6 + y * t;
+        case 1: return sin(t);
     }
 }
 
@@ -110,7 +110,7 @@ double Tetta(int num, double x, double y, double t)
 
 double UG(int num, double x, double y, double t)
 {
-    return pow(t, 3);
+    return sin(t);
     // switch(num)
     // {
     //     case 1: return x + 5 *t;
@@ -120,7 +120,7 @@ double UG(int num, double x, double y, double t)
 }
 
 double u_g(int num, double x, double y, double t) {
-    return pow(t, 3);
+    return sin(t);
 }
 
 /*получение глобального номера узла*/
@@ -142,7 +142,7 @@ int IndexOfUnknown(int i, int j) {
 /*построение сетки и временной сетки*/
 void GridBuilder()
 {
-    ifstream input("./test/matrix.txt");
+    ifstream input("./test/sxod/matrix.txt");
     input >> x_size >> y_size; 
     X_grid.resize(x_size);
     Y_grid.resize(y_size);
@@ -433,7 +433,7 @@ vector<double> BuildGlobalVector(vector<double> &l_B, int k)
 /*построение краевых условий*/
 void Kraevye()
 {
-    ifstream input("./test/kraevie.txt");
+    ifstream input("./test/sxod/kraevie.txt");
     input >> cntKraev;
     kraevye_uslov.resize(cntKraev);
     for (int i = 0; i < cntKraev; i++) {
@@ -556,7 +556,7 @@ void BuildGlobalMatrixAndVector(const vector<double>& u_prev, double t_n, double
         B = BuildGlobalVector(localB, k);
     }
 
-    PrintGlobalMatrix(global_size);
+    //PrintGlobalMatrix(global_size);
     
     //учёт краевых условий на t_{n+1}
     for (int i = 0; i < cntKraev; i++)
